@@ -1,11 +1,27 @@
 # import database module
-
+from database import Database, Table, read_csv
 # define a funcion called initializing
 
+Database_obj = Database()
 def initializing():
-    pass
+    data_temp = read_csv("persons.csv").read()
+    data_temp2 = read_csv("login.csv").read()
+    data_temp3 = read_csv("project.csv").read()
+    data_temp4 = read_csv("advisor_pending_request.csv").read()
+    data_temp5 = read_csv("member_pending_request.csv").read()
 
-# here are things to do in this function:
+    table_persons = Table("persons",data_temp)
+    table_login = Table("login", data_temp2)
+    table_project = Table("project", data_temp3)
+    table_advisor_pending_request = Table("advisor_pending_request", data_temp4)
+    table_member_pending_request = Table("member_pending_request", data_temp5)
+
+    Database_obj.insert(table_persons)
+    Database_obj.insert(table_login)
+    Database_obj.insert(table_project)
+    Database_obj.insert(table_advisor_pending_request)
+    Database_obj.insert(table_member_pending_request)
+    # here are things to do in this function:
 
     # create an object to read all csv files that will serve as a persistent state for this program
 
@@ -19,7 +35,16 @@ def initializing():
 # define a funcion called login
 
 def login():
-    pass
+    user = input("Username: ")
+    pwd = input("Password: ")
+    data = Database_obj.search("login")
+    for i in data.table:
+        print(i["username"], i["password"])
+        if (i['username']) == user and (i['password']) == pwd:
+            return (i['person_id']), (i['role'])
+        else:
+            return None
+
 
 # here are things to do in this function:
    # add code that performs a login task
@@ -28,7 +53,8 @@ def login():
 
 # define a function called exit
 def exit():
-    pass
+    print(Database_obj)
+    exit()
 
 # here are things to do in this function:
    # write out all the tables that have been modified to the corresponding csv files
