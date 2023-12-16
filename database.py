@@ -46,6 +46,21 @@ class Table:
                     dict1.update(dict2)
                     joined_table.table.append(dict1)
         return joined_table
+
+    def update_table(self, id_value, key, value):
+        for data in self.table:
+            if data["ID"] == str(id_value):
+                data[key] = value
+                return data
+        return
+
+    def update_dict(self, id_value):
+        for data in self.table:
+            if data["ID"] == str(id_value):
+                for keys in data.keys():
+                    data[keys] = input(f"Enter new {keys}: ")
+                return data
+        return
 # modify the code in the Table class so that it supports the insert operation where an entry can be added to a list of dictionary
 
 # modify the code in the Table class so that it supports the update operation where an entry's value associated with a key can be updated

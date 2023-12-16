@@ -1,26 +1,28 @@
 # import database module
-from database import Database, Table, read_csv
+import database
+import csv
 # define a funcion called initializing
 
-Database_obj = Database()
+Database_obj = database.Database()
 def initializing():
-    data_temp = read_csv("persons.csv").read()
-    data_temp2 = read_csv("login.csv").read()
-    data_temp3 = read_csv("project.csv").read()
-    data_temp4 = read_csv("advisor_pending_request.csv").read()
-    data_temp5 = read_csv("member_pending_request.csv").read()
+    data_temp = database.read_csv("persons.csv").read()
+    data_temp2 = database.read_csv("login.csv").read()
+    data_temp3 = database.read_csv("project.csv").read()
+    data_temp4 = database.read_csv("advisor_pending_request.csv").read()
+    data_temp5 = database.read_csv("member_pending_request.csv").read()
 
-    table_persons = Table("persons",data_temp)
-    table_login = Table("login", data_temp2)
-    table_project = Table("project", data_temp3)
-    table_advisor_pending_request = Table("advisor_pending_request", data_temp4)
-    table_member_pending_request = Table("member_pending_request", data_temp5)
+    table_persons = database.Table("persons", data_temp)
+    table_login = database.Table("login", data_temp2)
+    table_project = database.Table("project", data_temp3)
+    table_advisor_pending_request = database.Table("advisor_pending_request", data_temp4)
+    table_member_pending_request = database.Table("member_pending_request", data_temp5)
 
     Database_obj.insert(table_persons)
     Database_obj.insert(table_login)
     Database_obj.insert(table_project)
     Database_obj.insert(table_advisor_pending_request)
     Database_obj.insert(table_member_pending_request)
+    return Database_obj
     # here are things to do in this function:
 
     # create an object to read all csv files that will serve as a persistent state for this program
@@ -37,11 +39,11 @@ def initializing():
 def login():
     user = input("Username: ")
     pwd = input("Password: ")
-    data = Database_obj.search("login")
+    data = Database_obj.search("login.csv")
     for i in data.table:
         print(i["username"], i["password"])
         if (i['username']) == user and (i['password']) == pwd:
-            return (i['person_id']), (i['role'])
+            return (i['ID']), (i['role'])
         else:
             return None
 
@@ -52,9 +54,19 @@ def login():
         # returns [ID, role] if valid, otherwise returning None
 
 # define a function called exit
-def exit():
-    print(Database_obj)
-    exit()
+def exit(data_b):
+    for tables in data_b.database:
+        myfile = open(tables.Table.table_name, 'w')
+        writer = csv.writer(myfile)
+        writer.writerow([tables.table])
+        for dictionary in Database_obj.database:
+            writer.writerow(dictionary.values())
+        myfile.close()
+        myfile = open(tables.Table.table_name, 'r')
+        print(f"The content of the {tables.Table.table_name} is:")
+        print(myfile.read())
+        myfile.close()
+
 
 # here are things to do in this function:
    # write out all the tables that have been modified to the corresponding csv files
@@ -65,23 +77,29 @@ def exit():
 
 # make calls to the initializing and login functions defined above
 
-initializing()
+data_base = initializing()
 val = login()
+#while val is None:
+#    print("Username or password is invalid.")
+#    val = login()
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
-# if val[1] = 'admin':
-    # see and do admin related activities
-# elif val[1] = 'student':
-    # see and do student related activities
-# elif val[1] = 'member':
-    # see and do member related activities
-# elif val[1] = 'lead':
-    # see and do lead related activities
-# elif val[1] = 'faculty':
-    # see and do faculty related activities
-# elif val[1] = 'advisor':
-    # see and do advisor related activities
+if val[1] == 'admin':
+
+  # see and do admin related activities
+elif val[1] == 'student':
+  # see and do student related activities
+elif val[1] == 'member':
+  # see and do member related activities
+elif val[1] == 'lead':
+  # see and do lead related activities
+elif val[1] == 'faculty':
+  # see and do faculty related activities
+elif val[1] == 'advisor':
+  # see and do advisor related activities
 
 # once everyhthing is done, make a call to the exit function
-exit()
+print(Database_obj)
+exit(data_base)
+
