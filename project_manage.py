@@ -40,8 +40,7 @@ def login():
     user = input("Username: ")
     pwd = input("Password: ")
     data = Database_obj.search("login.csv")
-    for i in data.table:
-        print(i["username"], i["password"])
+    for i in data:
         if (i['username']) == user and (i['password']) == pwd:
             return (i['ID']), (i['role'])
         else:
@@ -79,25 +78,48 @@ def exit(data_b):
 
 data_base = initializing()
 val = login()
-#while val is None:
-#    print("Username or password is invalid.")
-#    val = login()
-
+while val is None:
+    print("Username or password is invalid.")
+    val = login()
+end = True
+while end:
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
-
-if val[1] == 'admin':
-
-  # see and do admin related activities
-elif val[1] == 'student':
-  # see and do student related activities
-elif val[1] == 'member':
-  # see and do member related activities
-elif val[1] == 'lead':
-  # see and do lead related activities
-elif val[1] == 'faculty':
-  # see and do faculty related activities
-elif val[1] == 'advisor':
-  # see and do advisor related activities
+    if val[1] == 'admin':
+        person = database.Persons('admin', val[0], data_base)
+        capable = person.capable()
+        choose = person.choose()
+        end = choose
+      # see and do admin related activities
+    elif val[1] == 'student':
+        person = database.Persons('student', val[0], data_base)
+        capable = person.capable()
+        choose = person.choose()
+        end = choose
+      # see and do student related activities
+    elif val[1] == 'member':
+        person = database.Persons('member', val[0], data_base)
+        capable = person.capable()
+        choose = person.choose()
+        end = choose
+      # see and do member related activities
+    elif val[1] == 'lead':
+        person = database.Persons('lead', val[0], data_base)
+        capable = person.capable()
+        choose = person.choose()
+        end = choose
+      # see and do lead related activities
+    elif val[1] == 'faculty':
+        person = database.Persons('faculty', val[0], data_base)
+        capable = person.capable()
+        choose = person.choose()
+        end = choose
+      # see and do faculty related activities
+    elif val[1] == 'advisor':
+        person = database.Persons('advisor', val[0], data_base)
+        capable = person.capable()
+        choose = person.choose()
+        end = choose
+      # see and do advisor related activities
 
 # once everyhthing is done, make a call to the exit function
 print(Database_obj)

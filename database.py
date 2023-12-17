@@ -61,6 +61,68 @@ class Table:
                     data[keys] = input(f"Enter new {keys}: ")
                 return data
         return
+
+class Persons:
+    def __init__(self, positions, id, database):
+        self.positions = positions
+        self.id = id
+        self.db = database
+        self.name = self.find_name(id)
+
+    def find_name(self, id):
+        for i in self.db.search("login.csv").table:
+            if i["ID"] == str(id):
+                return i["username"]
+
+    def capable(self):
+        print(f"Welcome {self.name} :D.")
+        print(f"would you like to")
+        if self.positions == 'admin':
+            print("0. exit.")
+            print("1. Update a value.")
+            print("2. Update a dictionary.")
+        elif self.positions == 'student':
+            print("0. exit.")
+            print("1. See project invitations.")
+            print("2. Respond to invitations.")
+            print("** keep in mind that you have to involved least one group project **")
+        elif self.positions == 'member':
+            print("0. exit.")
+            print("1. Modify project.")
+        elif self.positions == 'lead':
+            print("0. exit.")
+            print("1. Create project.")
+            print("2. Find members.")
+            print("3. Invite students to the project")
+            print("4. Modify project.")
+            print("5. Request to an advisor.")
+            print("6. Submit project to advisors.")
+        elif self.positions == 'faculty':
+            print("0. exit.")
+            print("1. See an advisor requests.")
+            print("2. Respond to requests.")
+            print("3. See project details.")
+            print("4. Evaluate Projects.")
+        elif self.positions == 'advisor'
+            print("0. exit.")
+            print("1. See advisor requests.")
+            print("2. Respond to requests.")
+            print("3. See project details.")
+            print("4. Approve the project.")
+            print("5. Evaluate Projects.")
+
+    def choose(self):
+        choice = input(f"Enter your choice: ")
+        while choice != 0:
+            if self.positions == 'admin':
+                if choice == 1:
+                    
+
+        return False
+
+
+
+
 # modify the code in the Table class so that it supports the insert operation where an entry can be added to a list of dictionary
 
 # modify the code in the Table class so that it supports the update operation where an entry's value associated with a key can be updated
