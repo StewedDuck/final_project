@@ -7,6 +7,8 @@
     <list default="true" id="0bb83c9d-748b-48bb-8d37-901239e6f71f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.csv" beforeDir="false" afterPath="$PROJECT_DIR$/project.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/project_manage.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

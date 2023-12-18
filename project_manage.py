@@ -83,39 +83,41 @@ while val is None:
     val = login()
 end = True
 while end:
+    id = val[0]
+    db = data_base
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
     if val[1] == 'admin':
-        person = database.Persons('admin', val[0], data_base)
+        person = database.Persons('admin', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
       # see and do admin related activities
     elif val[1] == 'student':
-        person = database.Persons('student', val[0], data_base)
+        person = database.Persons('student', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
       # see and do student related activities
     elif val[1] == 'member':
-        person = database.Persons('member', val[0], data_base)
+        person = database.Persons('member', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
       # see and do member related activities
     elif val[1] == 'lead':
-        person = database.Persons('lead', val[0], data_base)
+        person = database.Persons('lead', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
       # see and do lead related activities
     elif val[1] == 'faculty':
-        person = database.Persons('faculty', val[0], data_base)
+        person = database.Persons('faculty', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
       # see and do faculty related activities
     elif val[1] == 'advisor':
-        person = database.Persons('advisor', val[0], data_base)
+        person = database.Persons('advisor', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
