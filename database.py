@@ -1,6 +1,8 @@
-# try wrapping the code below that reads a persons.csv file in a class and make it more general such that it can read in any csv file
+import csv
+import os
+import copy
 
-import csv, os, copy
+
 class read_csv:
     def __init__(self, name):
         self.data = []
@@ -14,8 +16,8 @@ class read_csv:
             rows = csv.DictReader(f)
             for r in rows:
                 self.data.append(dict(r))
-
         return self.data
+
 
 # add in code for a Database class
 class Database:
@@ -30,6 +32,8 @@ class Database:
             if table.table_name == table_name:
                 return table
         return None
+
+
 # add in code for a Table class
 class Table:
     def __init__(self, table_name, table):
@@ -61,6 +65,7 @@ class Table:
                     data[keys] = input(f"Enter new {keys}: ")
                 return data
         return None
+
 
 class Persons:
     def __init__(self, positions, id, database):
@@ -189,7 +194,7 @@ class Persons:
                     print("Select projects to join.")
                     for invite in self.db.search("member_pending_request.csv").table:
                         if str(self.id) == invite["Member"]:
-                            if invite["Response"] == "waiting for the response":
+                            if invite["Response"] == "waiting for response":
                                 print(f"Project ID: {invite['ID']}")
                                 temp_list.append(invite["ID"])
                             print("Not found.")
@@ -227,11 +232,10 @@ class Persons:
                         project["Details"] = details
                         print("After Modified project details.")
                         self.project_details()
-                        None
             elif self.positions == 'lead':
                 if choice == 1:
                     temp_dict = {}
-                    for i in self.db.search("project.csv").table:
+                    for _ in self.db.search("project.csv").table:
                         title = input("Enter project title: ")
                         detail = input("Enter details: ")
                         temp_dict.update({"Title": title})
@@ -332,14 +336,135 @@ class Persons:
                                 self.db.search("project.csv").table.insert(temp_dict)
                     elif choice == "no":
                         print("Cancel.")
-                        return
-
-
+                        return None
+            elif self.positions == 'faculty':
+                if choice == 1:
+                    for invited in self.db.search("advisor_pending_request.csv").table:
+                        if str(self.id) == invited["Advisor"]:
+                            for projects in self.db.search("project.csv").table:
+                                if projects["ID"] == invited['ID']:
+                                    print("You have invited!! :D ")
+                                    print("Here are your invitation")
+                                    print(f"Project ID: {invited['ID']} "
+                                          f"Title: {projects['Title']}")
+                                else:
+                                    print("You have no invitation :( ")
+                elif choice == 2:
+                    temp_list = []
+                    print("Select projects to join.")
+                    for invite in self.db.search("advisor_pending_request.csv").table:
+                        if str(self.id) == invite["Advisor"]:
+                            if invite["Response"] == "waiting for response":
+                                print(f"Project ID: {invite['ID']}")
+                                temp_list.append(invite["ID"])
+                            print("Not found.")
+                            return None
+                    project = input("Enter project ID : ")
+                    while project not in temp_list:
+                        print("Invalid project ID")
+                        project = input("Enter project ID : ")
+                    for invite in self.db.search("member_pending_request.csv").table:
+                        if str(self.id) == invite["Advisor"]:
+                            if project == invite["ID"]:
+                                invite["Response"] = "waiting for confirmation"
+                    print(self.db.search("member_pending_request.csv"))
+                elif choice == 3:
+                    print("List of projects:")
+                    if len(self.db.search("project.csv").table) == 0:
+                        print("No projects found.")
+                    for projects in self.db.search("project.csv").table:
+                        print(f'ID: {projects["ID"]} Title: {projects["Title"]}')
+                        print(f"Lead: {self.find_name(projects['Lead'])}")
+                        member1 = self.find_name(projects['Member1'])
+                        member2 = self.find_name(projects['Member2'])
+                        if member1 is not None:
+                            print(f"Member1: {member1}")
+                        elif member1 is None:
+                            print(f"Member1: None")
+                        if member2 is not None:
+                            print(f"Member2: {member2}")
+                        elif member2 is None:
+                            print(f"Member2: None")
+                elif choice == 4:
+                    temp_dict = {}
+                    score = input("pass or not :(PASS/N)")
+                    comment = input("Comment: ")
+                    for items in self.db.search("project.csv").table:
+                        items["Status"] = "Evaluated"
+                        temp_dict.update({"ID": items["ID"]})
+                        temp_dict.update({"Title": items["Title"]})
+                        temp_dict.update({"score": score})
+                        temp_dict.update(({"comments": comment}))
+                        temp_dict.update({"evaluators": items["Advisor"]})
+                        self.db.search("project.csv").table.insert(temp_dict)
+            elif self.positions == 'advisor':
+                if choice == 1:
+                    for invited in self.db.search("advisor_pending_request.csv").table:
+                        if str(self.id) == invited["Advisor"]:
+                            for projects in self.db.search("project.csv").table:
+                                if projects["ID"] == invited['ID']:
+                                    print("You have invited!! :D ")
+                                    print("Here are your invitation")
+                                    print(f"Project ID: {invited['ID']} "
+                                          f"Title: {projects['Title']}")
+                                else:
+                                    print("You have no invitation :( ")
+                elif choice == 2:
+                    temp_list = []
+                    print("Select projects to join.")
+                    for invite in self.db.search("advisor_pending_request.csv").table:
+                        if str(self.id) == invite["Advisor"]:
+                            if invite["Response"] == "waiting for response":
+                                print(f"Project ID: {invite['ID']}")
+                                temp_list.append(invite["ID"])
+                            print("Not found.")
+                            return None
+                    project = input("Enter project ID : ")
+                    while project not in temp_list:
+                        print("Invalid project ID")
+                        project = input("Enter project ID : ")
+                    for invite in self.db.search("member_pending_request.csv").table:
+                        if str(self.id) == invite["Advisor"]:
+                            if project == invite["ID"]:
+                                invite["Response"] = "waiting for confirmation"
+                    print(self.db.search("member_pending_request.csv"))
+                elif choice == 3:
+                    print("List of projects:")
+                    if len(self.db.search("project.csv").table) == 0:
+                        print("No projects found.")
+                    for projects in self.db.search("project.csv").table:
+                        print(f'ID: {projects["ID"]} Title: {projects["Title"]}')
+                        print(f"Lead: {self.find_name(projects['Lead'])}")
+                        member1 = self.find_name(projects['Member1'])
+                        member2 = self.find_name(projects['Member2'])
+                        if member1 is not None:
+                            print(f"Member1: {member1}")
+                        elif member1 is None:
+                            print(f"Member1: None")
+                        if member2 is not None:
+                            print(f"Member2: {member2}")
+                        elif member2 is None:
+                            print(f"Member2: None")
+                elif choice == 4:
+                    temp_dict = {}
+                    approve = input("pass or not :(PASS/N)")
+                    comment = input("Comment: ")
+                    for items in self.db.search("project.csv").table:
+                        items["Status"] = "Approved"
+                        temp_dict.update({"Approval": approve})
+                        temp_dict.update(({"comments": comment}))
+                        temp_dict.update({"evaluators": items["Advisor"]})
+                        self.db.search("project.csv").table.insert(temp_dict)
+                elif choice == 5:
+                    temp_dict = {}
+                    score = input("pass or not :(PASS/N)")
+                    comment = input("Comment: ")
+                    for items in self.db.search("project.csv").table:
+                        items["Status"] = "Evaluated"
+                        temp_dict.update({"ID": items["ID"]})
+                        temp_dict.update({"Title": items["Title"]})
+                        temp_dict.update({"score": score})
+                        temp_dict.update(({"comments": comment}))
+                        temp_dict.update({"evaluators": items["Advisor"]})
+                        self.db.search("project.csv").table.insert(temp_dict)
         return False
-
-
-
-
-# modify the code in the Table class so that it supports the insert operation where an entry can be added to a list of dictionary
-
-# modify the code in the Table class so that it supports the update operation where an entry's value associated with a key can be updated

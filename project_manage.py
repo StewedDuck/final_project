@@ -4,6 +4,8 @@ import csv
 # define a funcion called initializing
 
 Database_obj = database.Database()
+
+
 def initializing():
     data_temp = database.read_csv("persons.csv").read()
     data_temp2 = database.read_csv("login.csv").read()
@@ -47,12 +49,6 @@ def login():
             return None
 
 
-# here are things to do in this function:
-   # add code that performs a login task
-        # ask a user for a username and password
-        # returns [ID, role] if valid, otherwise returning None
-
-# define a function called exit
 def exit(data_b):
     for tables in data_b.database:
         myfile = open(tables.Table.table_name, 'w')
@@ -67,15 +63,6 @@ def exit(data_b):
         myfile.close()
 
 
-# here are things to do in this function:
-   # write out all the tables that have been modified to the corresponding csv files
-   # By now, you know how to read in a csv file and transform it into a list of dictionaries. For this project, you also need to know how to do the reverse, i.e., writing out to a csv file given a list of dictionaries. See the link below for a tutorial on how to do this:
-   
-   # https://www.pythonforbeginners.com/basics/list-of-dictionaries-to-csv-in-python
-
-
-# make calls to the initializing and login functions defined above
-
 data_base = initializing()
 val = login()
 while val is None:
@@ -85,45 +72,36 @@ end = True
 while end:
     id = val[0]
     db = data_base
-# based on the return value for login, activate the code that performs activities according to the role defined for that person_id
     if val[1] == 'admin':
         person = database.Persons('admin', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
-      # see and do admin related activities
     elif val[1] == 'student':
         person = database.Persons('student', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
-      # see and do student related activities
     elif val[1] == 'member':
         person = database.Persons('member', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
-      # see and do member related activities
     elif val[1] == 'lead':
         person = database.Persons('lead', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
-      # see and do lead related activities
     elif val[1] == 'faculty':
         person = database.Persons('faculty', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
-      # see and do faculty related activities
     elif val[1] == 'advisor':
         person = database.Persons('advisor', id, db)
         capable = person.capable()
         choose = person.choose()
         end = choose
-      # see and do advisor related activities
 
-# once everyhthing is done, make a call to the exit function
 print(Database_obj)
 exit(data_base)
-
