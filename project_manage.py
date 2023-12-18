@@ -1,73 +1,43 @@
-# import database module
 import database
 import csv
-# define a funcion called initializing
-
-Database_obj = database.Database()
+import os
 
 
 def initializing():
-    data_temp = database.read_csv("persons.csv").read()
-    data_temp2 = database.read_csv("login.csv").read()
-    data_temp3 = database.read_csv("project.csv").read()
-    data_temp4 = database.read_csv("advisor_pending_request.csv").read()
-    data_temp5 = database.read_csv("member_pending_request.csv").read()
-
-    table_persons = database.Table("persons", data_temp)
-    table_login = database.Table("login", data_temp2)
-    table_project = database.Table("project", data_temp3)
-    table_advisor_pending_request = database.Table("advisor_pending_request", data_temp4)
-    table_member_pending_request = database.Table("member_pending_request", data_temp5)
-
-    Database_obj.insert(table_persons)
-    Database_obj.insert(table_login)
-    Database_obj.insert(table_project)
-    Database_obj.insert(table_advisor_pending_request)
-    Database_obj.insert(table_member_pending_request)
+    Database_obj = database.Database()
+    for files in os.listdir():
+        if files.endswith(".csv"):
+            data = database.Table(files, database.read_csv(files).read())
+            Database_obj.insert(data)
     return Database_obj
-    # here are things to do in this function:
-
-    # create an object to read all csv files that will serve as a persistent state for this program
-
-    # create all the corresponding tables for those csv files
-
-    # see the guide how many tables are needed
-
-    # add all these tables to the database
 
 
-# define a funcion called login
-
-def login():
+def login(database):
     user = input("Username: ")
     pwd = input("Password: ")
-    data = Database_obj.search("login.csv")
-    for i in data:
-        if (i['username']) == user and (i['password']) == pwd:
-            return (i['ID']), (i['role'])
-        else:
-            return None
+    for i in database.search("login.csv").table:
+        if user in i["username"]:
+            if pwd in i["password"]:
+                return [i["ID"], i["role"]]
+    return None
 
 
 def exit(data_b):
     for tables in data_b.database:
-        myfile = open(tables.Table.table_name, 'w')
-        writer = csv.writer(myfile)
-        writer.writerow([tables.table])
-        for dictionary in Database_obj.database:
-            writer.writerow(dictionary.values())
-        myfile.close()
-        myfile = open(tables.Table.table_name, 'r')
-        print(f"The content of the {tables.Table.table_name} is:")
-        print(myfile.read())
-        myfile.close()
+        if len(tables.table) != 0:
+            keys = tables.table[0].keys()
+            my_file = open(tables.table_name, 'w')
+            writer = csv.DictWriter(my_file, fieldnames=keys)
+            writer.writeheader()
+            writer.writerows(tables.table)
+            my_file.close()
 
 
 data_base = initializing()
-val = login()
+val = login(data_base)
 while val is None:
     print("Username or password is invalid.")
-    val = login()
+    val = login(data_base)
 end = True
 while end:
     id = val[0]
@@ -102,6 +72,4 @@ while end:
         capable = person.capable()
         choose = person.choose()
         end = choose
-
-print(Database_obj)
 exit(data_base)
