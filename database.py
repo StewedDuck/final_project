@@ -47,20 +47,20 @@ class Table:
                     joined_table.table.append(dict1)
         return joined_table
 
-    def update_table(self, id_value, key, value):
+    def update_dict(self, id, key, value):
         for data in self.table:
-            if data["ID"] == str(id_value):
+            if data["ID"] == str(id):
                 data[key] = value
                 return data
-        return
+        return None
 
-    def update_dict(self, id_value):
+    def update_values(self, id):
         for data in self.table:
-            if data["ID"] == str(id_value):
+            if data["ID"] == str(id):
                 for keys in data.keys():
                     data[keys] = input(f"Enter new {keys}: ")
                 return data
-        return
+        return None
 
 class Persons:
     def __init__(self, positions, id, database):
@@ -75,8 +75,8 @@ class Persons:
                 return i["username"]
 
     def capable(self):
-        print(f"Welcome {self.name} :D.")
-        print(f"would you like to")
+        print(f"Welcome {self.name} ,Your roles is {self.positions} :D.")
+        print(f"Would you like to")
         if self.positions == 'admin':
             print("0. exit.")
             print("1. Update a value.")
@@ -85,10 +85,12 @@ class Persons:
             print("0. exit.")
             print("1. See project invitations.")
             print("2. Respond to invitations.")
-            print("** keep in mind that you have to involved least one group project **")
+            print("3. Become a lead students?")
+            print("** Keep in mind that you have to involved least one group's project **")
         elif self.positions == 'member':
             print("0. exit.")
             print("1. Modify project.")
+            print("** Now that you are in, I'm just wanted to remind you that it no way out :P **")
         elif self.positions == 'lead':
             print("0. exit.")
             print("1. Create project.")
@@ -103,7 +105,7 @@ class Persons:
             print("2. Respond to requests.")
             print("3. See project details.")
             print("4. Evaluate Projects.")
-        elif self.positions == 'advisor'
+        elif self.positions == 'advisor':
             print("0. exit.")
             print("1. See advisor requests.")
             print("2. Respond to requests.")
@@ -112,11 +114,88 @@ class Persons:
             print("5. Evaluate Projects.")
 
     def choose(self):
-        choice = input(f"Enter your choice: ")
+        choice = input(int(f"Enter your choice: "))
         while choice != 0:
             if self.positions == 'admin':
+                id = input(str("Enter id: "))
                 if choice == 1:
-                    
+                    while True:
+                        print("Updating these Tables:")
+                        for tables in self.db:
+                            print(tables.table_name)
+                        print()
+                        table = input("Choose the table to update the Values: ")
+                        result = self.db.search(table).Table.update_values(id)
+                        print("Updated Tables")
+                        print(result)
+                        continues = input("Continue updating? (Yes/No): ")
+                        if continues == "No":
+                            break
+                        elif continues == "no":
+                            break
+                elif choice == 2:
+                    while True:
+                        print("Updating these Tables:")
+                        for tables in self.db:
+                            print(tables.table_name)
+                        print()
+                        table = input("Choose the table to update: ")
+                        key = input("Enter key: ")
+                        data = input("Enter data: ")
+                        result = self.db.search(table).Table.update_dict(id, key, data)
+                        print("Updated Tables")
+                        print(result)
+                        continues = input("Continue updating? (Yes/No): ")
+                        if continues == "No":
+                            return None
+                        elif continues == "no":
+                            return None
+            elif self.positions == 'student':
+                if choice == 1:
+                    for invited in self.db.search("member_pending_request.csv").table:
+                        if str(self.id) == invited["Member"]:
+                            for projects in self.db.search("projects.csv").table:
+                                if projects["ID"] == invited['ID']:
+                                    print("You have invited!! :D ")
+                                    print("Here are your invitation")
+                                    print(f"Project ID: {invited['ID']} "
+                                          f"Title: {projects['Title']}")
+                                else:
+                                    print("You have no invitation :( ")
+                elif choice == 2:
+                    temp_list = []
+                    print("Select projects to join.")
+                    for invite in self.db.search("member_pending_request.csv").table:
+                        if str(self.id) == invite["Member"]:
+                            if invite["Response"] == "waiting for response":
+                                print(f"Project ID: {invite['ID']}")
+                                temp_list.append(invite["ID"])
+                            print("Not found.")
+                            return None
+                    project = input("Enter project ID : ")
+                    while project not in temp_list:
+                        print("Invalid project ID")
+                        project = input("Enter project ID : ")
+                    for invite in self.db.search("member_pending_request.csv").table:
+                        if str(self.id) == invite["Member"]:
+                            if project == invite["ID"]:
+                                invite["Response"] = "waiting for confirmation"
+                    print(self.db.search("member_pending_request.csv"))
+                elif choice == 3:
+                    print("Become a lead students?")
+                    answer = input("(yes/no): ")
+                    while answer != "yes" and answer != "no":
+                        print("Invalid choice.")
+                        answer = input("(yes/no): ")
+                    if answer == "yes":
+                        for user in self.db.search("persons.csv").table:
+                            if user["ID"] == str(self.id):
+                                self.positions = 'lead'
+                                user["type"] = "lead"
+                        for user in self.db.search("login.csv").table:
+                            if user["ID"] == str(self.id):
+                                self.positions = 'lead'
+                                user["role"] = "lead"
 
         return False
 
